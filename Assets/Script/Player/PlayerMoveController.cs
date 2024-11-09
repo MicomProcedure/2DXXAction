@@ -11,7 +11,7 @@ public class PlayerMoveController : MonoBehaviour
     public Vector3 JumpForce;
 
     //地面にいるかどうか
-    public bool Grounded = true;
+    public bool Grounded = false;
 
     //移動速度
     public float MoveSpeed;
@@ -22,6 +22,7 @@ public class PlayerMoveController : MonoBehaviour
     void Start()
     {
         this.rigid2D = GetComponent<Rigidbody2D>();
+        this.Grounded = false;
     }
 
     // Update is called once per frame

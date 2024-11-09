@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerChangeController : MonoBehaviour
 {
     // 子オブジェクトを格納するリスト
-    private List<GameObject> PlayerObjectList = new List<GameObject>();
+    public List<GameObject> PlayerObjectList = new List<GameObject>();
+    public int NowCharacterIndex;
     //監督
     [SerializeField] MusicController MusicController;
 
@@ -38,10 +39,11 @@ public class PlayerChangeController : MonoBehaviour
                 {
                     //新しいキャラクターを出す
                     PlayerObjectList[randomValue].SetActive(true);
+                    NowCharacterIndex = randomValue;
                     //位置を調整
-                    PlayerObjectList[randomValue].transform.position = PlayerObjectList[activeIndex].transform.position;
+                    PlayerObjectList[NowCharacterIndex].transform.position = PlayerObjectList[activeIndex].transform.position;
                     //速度情報の受け渡し
-                    PlayerObjectList[randomValue].GetComponent<Rigidbody2D>().velocity = PlayerObjectList[activeIndex].GetComponent<Rigidbody2D>().velocity;
+                    PlayerObjectList[NowCharacterIndex].GetComponent<Rigidbody2D>().velocity = PlayerObjectList[activeIndex].GetComponent<Rigidbody2D>().velocity;
                     break;
                 }
             }
