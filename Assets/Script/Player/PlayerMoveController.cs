@@ -17,11 +17,11 @@ public class PlayerMoveController : MonoBehaviour
     public float MoveSpeed;
 
     //Rigidbody
-    Rigidbody rb;
+    Rigidbody2D rigid2D;
     // Start is called before the first frame update
     void Start()
     {
-        this.rb = GetComponent<Rigidbody>();
+        this.rigid2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -38,12 +38,16 @@ public class PlayerMoveController : MonoBehaviour
         //右に動く
         if(Input.GetKey(playerKeyCode.MoveRight))
         {
-            this.rb.velocity = new Vector3(MoveSpeed,this.rb.velocity.y,0);
+            this.rigid2D.velocity = new Vector2(MoveSpeed,this.rigid2D.velocity.y);
         }
         //左に動く
-        if(Input.GetKey(playerKeyCode.MoveLeft))
+        else if(Input.GetKey(playerKeyCode.MoveLeft))
         {
-            this.rb.velocity = new Vector3(-MoveSpeed,this.rb.velocity.y,0);
+            this.rigid2D.velocity = new Vector2(-MoveSpeed,this.rigid2D.velocity.y);
+        }
+        else
+        {
+            this.rigid2D.velocity = new Vector2(0,this.rigid2D.velocity.y);
         }
     }
 
@@ -52,13 +56,13 @@ public class PlayerMoveController : MonoBehaviour
         if(Input.GetKeyDown(playerKeyCode.JumpKey) && this.Grounded)
         {
             //上向きに力を加える
-            rb.AddForce(JumpForce,ForceMode.Impulse);
+            rigid2D.AddForce(JumpForce);
             //空中にいる判定にする
             this.Grounded = false;
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.tag == "Ground")
         {
