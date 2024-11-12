@@ -8,11 +8,11 @@ public class PigController : MonoBehaviour
     //どのくらい飛ばし率を追加するか
     public float AddBurstRate = 5.5f;
     // 力の強さ
-    public float forceAmount = 10f;  
+    public float forceAmount = 10f; 
     // Start is called before the first frame update
     void Start()
     {
-        
+    
     }
 
     // Update is called once per frame
@@ -29,6 +29,10 @@ public class PigController : MonoBehaviour
             PlayerDeadController.BurstRate += AddBurstRate;
             //操作不能
             PlayerDeadController.HitEnemy = true;
+            //SE
+            PlayerDeadController.PlayHitSE();
+            // ヒットストップ処理挿入
+            HitStopController.instance.StartHitStop(0.7f);
 
             // プレイヤーのRigidbody2Dを取得
             Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();

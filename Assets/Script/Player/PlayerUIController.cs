@@ -12,12 +12,12 @@ public class PlayerUIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        BurstRateText.text = "BurstRate:0.0";
+        BurstRateText.text = "BurstRate:0.0%";
     }
 
     // Update is called once per frame
     void Update()
     {
-        BurstRateText.text = "BurstRate:" + PlayerDeadController.BurstRate.ToString("F1");
+        BurstRateText.text = "BurstRate:" + PlayerDeadController.BurstRate.ToString("F1") + "%";
     }
 }

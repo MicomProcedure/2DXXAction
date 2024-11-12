@@ -12,10 +12,14 @@ public class PlayerDeadController : MonoBehaviour
     public float BurstRate = 0.0f;
     //敵に当たった
     public bool HitEnemy = false;
+    //SE
+    AudioSource aud;
+    public AudioClip HitSE;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.aud = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -26,5 +30,11 @@ public class PlayerDeadController : MonoBehaviour
         {
             PlayerChangeController.PlayerObjectList[PlayerChangeController.NowCharacterIndex].transform.position = new Vector2(Camera.main.transform.position.x,RevivalY);
         }
+    }
+
+    public void PlayHitSE()
+    {
+        //音楽
+        this.aud.PlayOneShot(HitSE);
     }
 }
