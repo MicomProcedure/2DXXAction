@@ -21,9 +21,7 @@ public class PlayerMoveController : MonoBehaviour
 
     //向いている方向
     int key = 1;
-    //アニメーション
-    Animator animator;
-    //相手に当たって操作が不能な時
+    [Header("相手に当たって操作が不能な時間")]
     public float HitEnemyStopTime = 0.5f;
     float HitEnemyDelta = 0;
 
@@ -34,7 +32,6 @@ public class PlayerMoveController : MonoBehaviour
     {
         this.rigid2D = GetComponent<Rigidbody2D>();
         this.Grounded = false;
-        this.animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -46,8 +43,6 @@ public class PlayerMoveController : MonoBehaviour
         Move();
         //反転
         ChangeAngle();
-        //アニメの速度
-        AnimationSpeed();
     }
 
     //画面外に出たら勝手に呼ばれる関数
@@ -59,19 +54,6 @@ public class PlayerMoveController : MonoBehaviour
         }
     }
 
-    private void AnimationSpeed()
-    {
-        float speedx = Mathf.Abs(this.rigid2D.velocity.x);
-        if(this.rigid2D.velocity.y == 0)
-        {
-            this.animator.speed = (speedx + 3)/ 2.0f;
-        }
-        else
-        {
-            this.animator.speed = 1.0f;
-        }
-        
-    }
 
     private void ChangeAngle()
     {
@@ -126,8 +108,6 @@ public class PlayerMoveController : MonoBehaviour
             rigid2D.AddForce(JumpForce);
             //空中にいる判定にする
             this.Grounded = false;
-            //アニメーション
-            this.animator.SetTrigger("JumpTrigger");
         }
     }
 

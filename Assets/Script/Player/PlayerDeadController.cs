@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerDeadController : MonoBehaviour
 {
@@ -17,6 +18,12 @@ public class PlayerDeadController : MonoBehaviour
     //SE
     AudioSource aud;
     public AudioClip HitSE;
+    public AudioClip KnockEnemySE;
+    //SEが一度だけ呼ばれるように
+    private bool isSceneChange = false; 
+
+    //監督
+    public CameraShake CameraShake;
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +38,6 @@ public class PlayerDeadController : MonoBehaviour
         if(PlayerChangeController.PlayerObjectList[PlayerChangeController.NowCharacterIndex].transform.position.y < -15)
         {
             PlayerDead = true;
-            PlayerChangeController.PlayerObjectList[PlayerChangeController.NowCharacterIndex].transform.position = new Vector2(Camera.main.transform.position.x,RevivalY);
         }
 
         //飛ばし率100超えたら死亡
@@ -39,11 +45,36 @@ public class PlayerDeadController : MonoBehaviour
         {
             PlayerDead = true;
         }
+
+        //死んだときの処理
+        if(PlayerDead)
+        {    
+            if(isSceneChange == false)
+            {
+                isSceneChange = true;
+                PlayHitSE();
+            }
+            //カメラ揺らす
+            StartCoroutine(CameraShake.Shake(0.3f, 0.6f));
+            
+            // SEの再生時間だけ待ってからシーンを変更
+            StartCoroutine(WaitAndChangeScene(HitSE.length));
+        }
+    }
+    private IEnumerator WaitAndChangeScene(float delay)
+    {
+        yield return new WaitForSeconds(delay); // SEの再生時間待機
+        SceneManager.LoadScene("MainScene");   // シーンを変更
     }
 
     public void PlayHitSE()
     {
         //音楽
         this.aud.PlayOneShot(HitSE);
+    }
+    public void PlayKnockEnemySE()
+    {
+        //音楽
+        this.aud.PlayOneShot(KnockEnemySE);
     }
 }
