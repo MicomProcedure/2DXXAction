@@ -23,6 +23,12 @@ public class PlayerMoveController : MonoBehaviour
     int key = 1;
     //アニメーション
     Animator animator;
+    //相手に当たって操作が不能な時
+    public float HitEnemyStopTime = 0.5f;
+    float HitEnemyDelta = 0;
+
+    //監督
+    public PlayerDeadController PlayerDeadController;
     // Start is called before the first frame update
     void Start()
     {
@@ -72,22 +78,35 @@ public class PlayerMoveController : MonoBehaviour
 
     private void Move()
     {
-        //右に動く
-        if(Input.GetKey(playerKeyCode.MoveRight))
+        if(PlayerDeadController.HitEnemy == false)
         {
-            this.rigid2D.velocity = new Vector2(MoveSpeed,this.rigid2D.velocity.y);
-            this.key = 1;
-        }
-        //左に動く
-        else if(Input.GetKey(playerKeyCode.MoveLeft))
-        {
-            this.rigid2D.velocity = new Vector2(-MoveSpeed,this.rigid2D.velocity.y);
-            this.key = -1;
+            //右に動く
+            if(Input.GetKey(playerKeyCode.MoveRight))
+            {
+                this.rigid2D.velocity = new Vector2(MoveSpeed,this.rigid2D.velocity.y);
+                this.key = 1;
+            }
+            //左に動く
+            else if(Input.GetKey(playerKeyCode.MoveLeft))
+            {
+                this.rigid2D.velocity = new Vector2(-MoveSpeed,this.rigid2D.velocity.y);
+                this.key = -1;
+            }
+            else
+            {
+                this.rigid2D.velocity = new Vector2(0,this.rigid2D.velocity.y);
+            }
         }
         else
         {
-            this.rigid2D.velocity = new Vector2(0,this.rigid2D.velocity.y);
+            HitEnemyDelta += Time.deltaTime;
+            if(HitEnemyStopTime<HitEnemyDelta)
+            {
+                HitEnemyDelta = 0;
+                PlayerDeadController.HitEnemy = false;
+            }
         }
+        
     }
 
     private void Jump()

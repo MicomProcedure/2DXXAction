@@ -7,6 +7,11 @@ public class PlayerDeadController : MonoBehaviour
     //復活するy座標
     public float RevivalY = 3.0f;
     [SerializeField] PlayerChangeController PlayerChangeController;
+
+    //飛ばし率
+    public float BurstRate = 0.0f;
+    //敵に当たった
+    public bool HitEnemy = false;
     // Start is called before the first frame update
     void Start()
     {
