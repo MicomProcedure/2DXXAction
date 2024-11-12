@@ -8,6 +8,8 @@ public class PlayerDeadController : MonoBehaviour
     public float RevivalY = 3.0f;
     [SerializeField] PlayerChangeController PlayerChangeController;
 
+    public bool PlayerDead = false;
+
     //飛ばし率
     public float BurstRate = 0.0f;
     //敵に当たった
@@ -28,6 +30,7 @@ public class PlayerDeadController : MonoBehaviour
         //プレイヤーが落ちた時の処理
         if(PlayerChangeController.PlayerObjectList[PlayerChangeController.NowCharacterIndex].transform.position.y < -15)
         {
+            PlayerDead = true;
             PlayerChangeController.PlayerObjectList[PlayerChangeController.NowCharacterIndex].transform.position = new Vector2(Camera.main.transform.position.x,RevivalY);
         }
     }

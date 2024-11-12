@@ -50,6 +50,15 @@ public class PlayerMoveController : MonoBehaviour
         AnimationSpeed();
     }
 
+    //画面外に出たら勝手に呼ばれる関数
+    void OnBecameInvisible() 
+    {
+        if(this.gameObject.activeSelf)
+        {
+            PlayerDeadController.PlayerDead = true;
+        }
+    }
+
     private void AnimationSpeed()
     {
         float speedx = Mathf.Abs(this.rigid2D.velocity.x);
