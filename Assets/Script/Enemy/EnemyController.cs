@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PigController : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
     public PlayerDeadController PlayerDeadController;
     //どのくらい飛ばし率を追加するか
