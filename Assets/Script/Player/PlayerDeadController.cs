@@ -33,6 +33,12 @@ public class PlayerDeadController : MonoBehaviour
             PlayerDead = true;
             PlayerChangeController.PlayerObjectList[PlayerChangeController.NowCharacterIndex].transform.position = new Vector2(Camera.main.transform.position.x,RevivalY);
         }
+
+        //飛ばし率100超えたら死亡
+        if(100<=BurstRate)
+        {
+            PlayerDead = true;
+        }
     }
 
     public void PlayHitSE()
