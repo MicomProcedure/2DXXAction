@@ -66,7 +66,8 @@ public class EnemyController : MonoBehaviour
                 StartCoroutine(CameraShake.Shake(0.3f, 0.2f));
                 // ヒットストップ処理挿入
                 HitStopController.instance.StartHitStop(0.7f);
-
+                //プレイヤーの飛ばされてるアニメーション
+                collision.gameObject.GetComponent<Animator>().SetTrigger("Damaged");
                 // プレイヤーのRigidbody2Dを取得
                 Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
                 if (AddForceRight == false)
