@@ -12,6 +12,8 @@ public class EnemyController : MonoBehaviour
     //飛ばす方向の指定
     public bool AnyWhere = false;
     public bool AddForceRight = false;
+    //飛び率のテキスト
+    public GameObject BurstRateText;
     //監督
     public CameraShake CameraShake;
     // Start is called before the first frame update
@@ -51,6 +53,8 @@ public class EnemyController : MonoBehaviour
                 // プレイヤーが敵の上を踏んだ場合: 敵を倒す
                 //SE
                 PlayerDeadController.PlayKnockEnemySE();
+                //文字のアニメーション
+                BurstRateText.GetComponent<Animator>().SetTrigger("Reduce");
                 // ヒットストップ処理挿入
                 HitStopController.instance.StartHitStop(0.3f);
                 Destroy(gameObject); 
@@ -65,10 +69,13 @@ public class EnemyController : MonoBehaviour
                 PlayerDeadController.PlayHitSE();
                 //カメラ揺らす
                 StartCoroutine(CameraShake.Shake(0.3f, 0.2f));
-                // ヒットストップ処理挿入
-                HitStopController.instance.StartHitStop(0.7f);
+                
                 //プレイヤーの飛ばされてるアニメーション
                 collision.gameObject.GetComponent<Animator>().SetTrigger("Damaged");
+                //飛び率のアニメーション
+                BurstRateText.GetComponent<Animator>().SetTrigger("Damaged");
+                // ヒットストップ処理挿入
+                HitStopController.instance.StartHitStop(0.7f);
                 // プレイヤーのRigidbody2Dを取得
                 Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
                 

@@ -22,6 +22,9 @@ public class PlayerDeadController : MonoBehaviour
     //SEが一度だけ呼ばれるように
     private bool isSceneChange = false; 
 
+    //赤いパネル
+    public GameObject RedPanel;
+
     //監督
     public CameraShake CameraShake;
 
@@ -56,7 +59,8 @@ public class PlayerDeadController : MonoBehaviour
             }
             //カメラ揺らす
             StartCoroutine(CameraShake.Shake(0.3f, 0.6f));
-            
+            //画面を赤くする
+            RedPanel.SetActive(true);
             // SEの再生時間だけ待ってからシーンを変更
             StartCoroutine(WaitAndChangeScene(HitSE.length));
         }
