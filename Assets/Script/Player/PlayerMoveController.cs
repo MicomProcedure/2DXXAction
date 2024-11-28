@@ -71,25 +71,21 @@ public class PlayerMoveController : MonoBehaviour
     {
         if(PlayerDeadController.HitEnemy == false)
         {
-            if(gameObject.name != "PlayerFlog")
+            //蛙，蛇以外の操作
+            if(gameObject.name != "PlayerFlog" && gameObject.name != "PlayerSnake")
             {
-                //右に動く
-                if(Input.GetKey(playerKeyCode.MoveRight))
-                {
-                    this.rigid2D.velocity = new Vector2(MoveSpeed,this.rigid2D.velocity.y);
-                    this.key = 1;
-                }
-                //左に動く
-                else if(Input.GetKey(playerKeyCode.MoveLeft))
-                {
-                    this.rigid2D.velocity = new Vector2(-MoveSpeed,this.rigid2D.velocity.y);
-                    this.key = -1;
-                }
-                else
-                {   
-                    this.rigid2D.velocity = new Vector2(0,this.rigid2D.velocity.y);
-                }
-            }     
+                NormalMove();
+            }
+            //蛙
+            else if(gameObject.name == "PlayerFlog")     
+            {
+                FlogMove();
+            }
+            //蛇
+            else if(gameObject.name == "PlayerSnake")
+            {
+                SnakeMove();
+            }
         }
         else
         {
@@ -105,6 +101,38 @@ public class PlayerMoveController : MonoBehaviour
 
     private void Jump()
     {
+        if(gameObject.name != "PlayerFlog")
+        {
+            NormalJump();
+        }
+        else if(gameObject.name == "PlayerFlog")
+        {
+            FlogJump();
+        }
+    }
+
+    private void NormalMove()
+    {
+        //右に動く
+        if(Input.GetKey(playerKeyCode.MoveRight))
+        {
+            this.rigid2D.velocity = new Vector2(MoveSpeed,this.rigid2D.velocity.y);
+            this.key = 1;
+        }
+        //左に動く
+        else if(Input.GetKey(playerKeyCode.MoveLeft))
+        {
+            this.rigid2D.velocity = new Vector2(-MoveSpeed,this.rigid2D.velocity.y);
+            this.key = -1;
+        }
+        else
+        {   
+            this.rigid2D.velocity = new Vector2(0,this.rigid2D.velocity.y);
+        }
+    }
+
+    private void NormalJump()
+    {
         if(Input.GetKeyDown(playerKeyCode.JumpKey) && this.Grounded)
         {
             //上向きに力を加える
@@ -112,6 +140,56 @@ public class PlayerMoveController : MonoBehaviour
             //空中にいる判定にする
             this.Grounded = false;
         }
+    }
+
+    private void FlogMove()
+    {
+        //右を向く
+        if(Input.GetKey(playerKeyCode.MoveRight))
+        {
+           key = 1;
+           if(this.rigid2D.velocity.x < 0)
+           {
+                this.rigid2D.velocity = new Vector2(this.rigid2D.velocity.x*0.9f,this.rigid2D.velocity.y);
+           }
+        }
+        //左を向く
+        else if(Input.GetKey(playerKeyCode.MoveLeft))
+        {
+            key = -1;
+            if(this.rigid2D.velocity.x > 0)
+            {
+                this.rigid2D.velocity = new Vector2(this.rigid2D.velocity.x*0.9f,this.rigid2D.velocity.y);
+            }
+        }
+
+        //地面にいるならば速度0
+        if(Grounded)
+        {
+            this.rigid2D.velocity = new Vector2(0,this.rigid2D.velocity.y);
+        }
+    }
+
+    private void FlogJump()
+    {
+        //蛙特有のジャンプの処理
+        if(Input.GetKeyDown(playerKeyCode.JumpKey) && Grounded)
+        {
+            rigid2D.AddForce(new Vector2(Mathf.Sign(transform.localScale.x)*JumpForce.x,JumpForce.y));
+            Grounded = false;
+        }
+    }
+
+    private void SnakeMove()
+    {
+        SnakeController snakeController = gameObject.GetComponent<SnakeController>();
+        
+        //体を伸ばしてないときは普通の動き
+        if(snakeController.isAttaking==false && snakeController.charging == false)
+        {
+            NormalMove();
+        }
+        
     }
 
     void OnCollisionEnter2D(Collision2D collision)
