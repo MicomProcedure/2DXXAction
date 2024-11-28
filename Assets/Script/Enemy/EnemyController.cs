@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
     // 力の強さ
     public float forceAmount = 10f; 
     //飛ばす方向の指定
+    public bool AnyWhere = false;
     public bool AddForceRight = false;
     //監督
     public CameraShake CameraShake;
@@ -70,7 +71,13 @@ public class EnemyController : MonoBehaviour
                 collision.gameObject.GetComponent<Animator>().SetTrigger("Damaged");
                 // プレイヤーのRigidbody2Dを取得
                 Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
-                if (AddForceRight == false)
+                
+                //飛ぶ方向(可変的)
+                if(AnyWhere)
+                {
+                    rb.AddForce(Mathf.Sign(collision.gameObject.transform.localScale.x)*(-1)*new Vector2(1,0)* forceAmount*PlayerDeadController.BurstRate, ForceMode2D.Impulse);
+                }
+                else if (AddForceRight == false)
                 {
                     // 左方向に力を加える（x軸負方向）
                     rb.AddForce(Vector2.left * forceAmount*PlayerDeadController.BurstRate, ForceMode2D.Impulse);

@@ -11,9 +11,8 @@ public class BirdController : MonoBehaviour
     public float HoveringSpeedY = 5.0f;
     [Header("ホバリングできる回数")]
     public int HoveringLimit = 3;
-    [Header("ホバリングできる速度")]
-    public float CanHoveringSpeedY = 3.0f;
     private int HoveringCount = 0;
+    private bool CanHovering = false;
     //監督
     public PlayerMoveController PlayerMoveController;
     public PlayerKeyCode playerKeyCode;
@@ -31,8 +30,7 @@ public class BirdController : MonoBehaviour
         {
             if(PlayerMoveController.Grounded == false && HoveringCount < HoveringLimit)
             {
-                //地面のジャンプと同時に出ないように
-                if(this.rigid2D.velocity.y < CanHoveringSpeedY)
+                if(CanHovering)
                 {
                     this.rigid2D.velocity = new Vector3(this.rigid2D.velocity.x,HoveringSpeedY);
                     //カウント
@@ -40,6 +38,12 @@ public class BirdController : MonoBehaviour
                 }
                 
             }
+        }
+
+        //降下し始めたらホバリングスタート
+        if(this.rigid2D.velocity.y <= 0)
+        {
+            CanHovering = true;
         }
 
         //地面に下りた際にホバリングのカウントをリセット
@@ -51,6 +55,7 @@ public class BirdController : MonoBehaviour
         if(PlayerMoveController.Grounded)
         {
             this.HoveringCount = 0;
+            CanHovering = false;
         }
     }
 }
