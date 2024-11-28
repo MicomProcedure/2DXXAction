@@ -13,6 +13,7 @@ public class SnakeController : MonoBehaviour
     public KeyCode AttackKey;
     private float power = 0;
     public bool isAttaking = false;
+    private bool FirstAttack = true;
     public bool charging = false;
     public float addpower = 0.1f;
     [Header("チャージアタックで進む距離")]
@@ -29,6 +30,7 @@ public class SnakeController : MonoBehaviour
         IniScale = new Vector2(transform.localScale.x,transform.localScale.y);
         isAttaking = false;
         charging = false;
+        FirstAttack = true;
     }
 
     // Update is called once per frame
@@ -66,13 +68,21 @@ public class SnakeController : MonoBehaviour
         }
         else if(isAttaking)
         {
-            this.rigid2D.AddForce(new Vector2(transform.localScale.x*ChargeAttackDistance.x,ChargeAttackDistance.y),ForceMode2D.Impulse);
-            isAttaking = false;
+            //一度だけ来るように
+            if(FirstAttack)
+            {
+                this.rigid2D.AddForce(new Vector2(transform.localScale.x*ChargeAttackDistance.x*power*100,ChargeAttackDistance.y),ForceMode2D.Impulse);
+                FirstAttack = false;
+            }
+
+            //地面についているなら?一定時間なら?アタック終了
+            //isAttaking = false;
         }
         else
         {
             power = 0;
             transform.localScale = IniScale;
+
         }
 
         animator.SetBool("charging", charging);
@@ -89,5 +99,12 @@ public class SnakeController : MonoBehaviour
         {
             this.animator.speed = 1.0f;
         }   
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        //何かにあったたら攻撃終了
+        isAttaking = false;
+        FirstAttack = true;
     }
 }
