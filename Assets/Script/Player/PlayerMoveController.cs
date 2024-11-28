@@ -71,22 +71,25 @@ public class PlayerMoveController : MonoBehaviour
     {
         if(PlayerDeadController.HitEnemy == false)
         {
-            //右に動く
-            if(Input.GetKey(playerKeyCode.MoveRight))
+            if(gameObject.name != "PlayerFlog")
             {
-                this.rigid2D.velocity = new Vector2(MoveSpeed,this.rigid2D.velocity.y);
-                this.key = 1;
-            }
-            //左に動く
-            else if(Input.GetKey(playerKeyCode.MoveLeft))
-            {
-                this.rigid2D.velocity = new Vector2(-MoveSpeed,this.rigid2D.velocity.y);
-                this.key = -1;
-            }
-            else
-            {
-                this.rigid2D.velocity = new Vector2(0,this.rigid2D.velocity.y);
-            }
+                //右に動く
+                if(Input.GetKey(playerKeyCode.MoveRight))
+                {
+                    this.rigid2D.velocity = new Vector2(MoveSpeed,this.rigid2D.velocity.y);
+                    this.key = 1;
+                }
+                //左に動く
+                else if(Input.GetKey(playerKeyCode.MoveLeft))
+                {
+                    this.rigid2D.velocity = new Vector2(-MoveSpeed,this.rigid2D.velocity.y);
+                    this.key = -1;
+                }
+                else
+                {   
+                    this.rigid2D.velocity = new Vector2(0,this.rigid2D.velocity.y);
+                }
+            }     
         }
         else
         {

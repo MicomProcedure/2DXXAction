@@ -25,6 +25,8 @@ public class PlayerDeadController : MonoBehaviour
     //赤いパネル
     public GameObject RedPanel;
 
+    float Scenedelta = 0;
+
     //監督
     public CameraShake CameraShake;
 
@@ -62,13 +64,16 @@ public class PlayerDeadController : MonoBehaviour
             //画面を赤くする
             RedPanel.SetActive(true);
             // SEの再生時間だけ待ってからシーンを変更
-            StartCoroutine(WaitAndChangeScene(HitSE.length));
+            WaitAndChangeScene(HitSE.length);
         }
     }
-    private IEnumerator WaitAndChangeScene(float delay)
+    private void WaitAndChangeScene(float delay)
     {
-        yield return new WaitForSeconds(delay); // SEの再生時間待機
-        SceneManager.LoadScene("MainScene");   // シーンを変更
+        Scenedelta += Time.deltaTime;
+        if(delay < Scenedelta)
+        {
+            SceneManager.LoadScene("MainScene");   // シーンを変更
+        }
     }
 
     public void PlayHitSE()
