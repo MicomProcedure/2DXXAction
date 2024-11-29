@@ -18,9 +18,16 @@ public class SnakeController : MonoBehaviour
     public float addpower = 0.1f;
     [Header("チャージアタックで進む距離")]
     public Vector3 ChargeAttackDistance;
-
+    [Header("チャージアタックの敵に対する強さ")]
+    public float SnakeAttackForce = 1;
+    
     //スケールの初期値
     private Vector2 IniScale;
+    //SE
+    AudioSource aud;
+    public AudioClip BatSE;
+    //監督
+    public PlayerDeadController playerDeadController;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +38,8 @@ public class SnakeController : MonoBehaviour
         isAttaking = false;
         charging = false;
         FirstAttack = true;
+        //SE
+        this.aud = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -48,6 +57,8 @@ public class SnakeController : MonoBehaviour
         if(Input.GetKey(AttackKey))
         {
             charging = true;
+            //速度0に
+            this.rigid2D.velocity = new Vector2(0,rigid2D.velocity.y);
         }
         //キーを離したらパワー解放
         else
@@ -62,7 +73,7 @@ public class SnakeController : MonoBehaviour
             {
                 power += addpower;
                 //体を伸ばす
-                transform.localScale = new Vector2(IniScale.x + power,IniScale.y);
+                transform.localScale = new Vector2(Mathf.Sign(transform.localScale.x)*IniScale.x + Mathf.Sign(transform.localScale.x)*power,IniScale.y);
                 isAttaking = true;
             }
         }
@@ -71,21 +82,13 @@ public class SnakeController : MonoBehaviour
             //一度だけ来るように
             if(FirstAttack)
             {
-                this.rigid2D.AddForce(new Vector2(transform.localScale.x*ChargeAttackDistance.x*power*100,ChargeAttackDistance.y),ForceMode2D.Impulse);
+                this.rigid2D.AddForce(new Vector2(Mathf.Sign(transform.localScale.x)*ChargeAttackDistance.x*power*100,ChargeAttackDistance.y),ForceMode2D.Impulse);
                 FirstAttack = false;
             }
-
-            //地面についているなら?一定時間なら?アタック終了
-            //isAttaking = false;
-        }
-        else
-        {
-            power = 0;
-            transform.localScale = IniScale;
-
         }
 
         animator.SetBool("charging", charging);
+        animator.SetBool("isAttaking",isAttaking);
     }
 
     private void AnimationSpeed()
@@ -103,8 +106,29 @@ public class SnakeController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        //敵に当たった場合は敵を吹き飛ばす
+        if(collision.gameObject.tag == "Enemy" && isAttaking)
+        {
+            Rigidbody2D Rigid2DEnemy = collision.gameObject.GetComponent<Rigidbody2D>();
+            //アニメーション,colliderをオフに
+            collision.gameObject.GetComponent<Animator>().enabled = false;
+            collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            // ヒットストップ処理挿入
+            HitStopController.instance.StartHitStop(0.3f);
+            //SE
+            this.aud.PlayOneShot(BatSE);
+            //相手をとばす
+            Rigid2DEnemy.AddForce(Mathf.Sign(transform.localScale.x)*new Vector2(1,0.5f)*power*SnakeAttackForce, ForceMode2D.Impulse);
+            //飛び率に関して
+            EnemyController  enemyController = collision.gameObject.GetComponent<EnemyController>();
+            //半分になるという設定
+            playerDeadController.BurstRate /= 2;
+            enemyController.TextReduceAnimaton();
+        }
         //何かにあったたら攻撃終了
         isAttaking = false;
         FirstAttack = true;
+        power = 0;
+        transform.localScale = IniScale;
     }
 }
