@@ -14,6 +14,8 @@ public class EnemyController : MonoBehaviour
     public bool AddForceRight = false;
     //飛び率のテキスト
     public GameObject BurstRateText;
+    //飛び率の初期値
+    float IniBurstRate;
     //プレイヤーの足についてる当たり判定が反応しているかどうか
     public bool FootTrigger = false;
 
@@ -22,6 +24,11 @@ public class EnemyController : MonoBehaviour
     //監督
     public CameraShake CameraShake;
     public PlayerUIController playerUIController;
+
+    void Start()
+    {
+        IniBurstRate = PlayerDeadController.BurstRate;
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -57,7 +64,7 @@ public class EnemyController : MonoBehaviour
 
         
         //飛ばし率の追加
-        StartCoroutine(playerUIController.UpdateTextValue(PlayerDeadController.BurstRate,PlayerDeadController.BurstRate+AddBurstRate));
+        StartCoroutine(playerUIController.UpdateTextValue(PlayerDeadController.BurstRate-IniBurstRate,PlayerDeadController.BurstRate+AddBurstRate-IniBurstRate));
         PlayerDeadController.BurstRate += AddBurstRate;
         //操作不能
         PlayerDeadController.HitEnemy = true;
@@ -74,7 +81,6 @@ public class EnemyController : MonoBehaviour
         HitStopController.instance.StartHitStop(0.7f);
         // プレイヤーのRigidbody2Dを取得
         Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
-        
         //飛ぶ方向(可変的)
         if(AnyWhere)
         {
@@ -102,14 +108,12 @@ public class EnemyController : MonoBehaviour
             //飛ばし率の減少
             if(PlayerDeadController.BurstRate-AddBurstRate/2<=0)
             {
-                
-                StartCoroutine(playerUIController.UpdateTextValue(PlayerDeadController.BurstRate,0));
+                playerUIController.StartChangeText(PlayerDeadController.BurstRate-IniBurstRate,0.0f);
                 PlayerDeadController.BurstRate = 0;
             }
             else
             {
-                
-                StartCoroutine(playerUIController.UpdateTextValue(PlayerDeadController.BurstRate,PlayerDeadController.BurstRate-AddBurstRate/2));
+                playerUIController.StartChangeText(PlayerDeadController.BurstRate-IniBurstRate,PlayerDeadController.BurstRate-IniBurstRate-AddBurstRate/2);
                 PlayerDeadController.BurstRate -= AddBurstRate/2;
             }
             
@@ -120,7 +124,7 @@ public class EnemyController : MonoBehaviour
             // ヒットストップ処理挿入
             HitStopController.instance.StartHitStop(0.3f);
             AlreadyDead = true;
-            Destroy(gameObject); 
+            Destroy(gameObject);  //ここでオブジェクトがなくなるので単純にコルーチンをスタートするだけではテキストは徐々に減らなかった
         }
     }
 

@@ -23,7 +23,7 @@ public class PlayerUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //BurstRateText2.text = "                " + PlayerDeadController.BurstRate.ToString("F1") + "%";
+
     }
 
     public IEnumerator UpdateTextValue(float start, float target) 
@@ -41,5 +41,10 @@ public class PlayerUIController : MonoBehaviour
 
         // 最後に確実に目標値をセット
         BurstRateText2.text = "                " + target.ToString("F1") + "%";
+    }
+
+    public void StartChangeText(float start,float target)
+    {
+        StartCoroutine(UpdateTextValue(start,target));
     }
 }
