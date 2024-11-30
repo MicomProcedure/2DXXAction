@@ -10,6 +10,9 @@ public class PlayerUIController : MonoBehaviour
     public TextMeshProUGUI BurstRateText2;
     public PlayerDeadController PlayerDeadController;
 
+    //飛び率が徐々に変わる処理
+    public float duration = 0.5f; // 数値が変化するのにかける時間
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +23,23 @@ public class PlayerUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        BurstRateText2.text = "                " + PlayerDeadController.BurstRate.ToString("F1") + "%";
+        //BurstRateText2.text = "                " + PlayerDeadController.BurstRate.ToString("F1") + "%";
+    }
+
+    public IEnumerator UpdateTextValue(float start, float target) 
+    {
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            float currentValue = Mathf.RoundToInt(Mathf.Lerp(start, target, t));
+            BurstRateText2.text = "                " + currentValue.ToString("F1") + "%";
+            yield return null;
+        }
+
+        // 最後に確実に目標値をセット
+        BurstRateText2.text = "                " + target.ToString("F1") + "%";
     }
 }
